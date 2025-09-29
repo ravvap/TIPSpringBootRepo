@@ -1,0 +1,28 @@
+spring:
+  profiles:
+    active: dev
+    include: common
+    
+  application:
+    name: tip-cycle-group-service
+
+---
+# Common configuration for all profiles
+spring:
+  config:
+    activate:
+      on-profile: common
+  main:
+    banner-mode: console
+    allow-bean-definition-overriding: false
+
+logging:
+  level:
+    ROOT: INFO
+
+management:
+  endpoints:
+    enabled-by-default: false
+    web:
+      exposure:
+        include: health,info
