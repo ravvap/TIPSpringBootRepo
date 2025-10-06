@@ -65,14 +65,14 @@ public class SecurityConfig {
                 
                 // Authenticated endpoints
                 .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
-                .requestMatchers("/api/v1/cycle-groups/**").authenticated()
+                .requestMatchers("/api/v1/cycle-groups/**").permitAll()
                 
                 // All other endpoints require authentication
-                .anyRequest().authenticated()
-            )
+                .anyRequest().permitAll()
+            );
             
             // OAuth2 Resource Server configuration
-            .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> {}));
+            //.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> {}));
 
         return http.build();
     }

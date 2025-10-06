@@ -20,7 +20,6 @@ import jakarta.persistence.Table;
  * @Date 9/28/2025
  * Entity class representing a Review Cycle Group.
  */
-
 @Entity
 @Table(name = "review_cycle_group")
 public class ReviewCycleGroup extends BaseEntity {

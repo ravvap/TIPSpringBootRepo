@@ -2,6 +2,7 @@ package gov.fdic.tip;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 
 /**
@@ -12,7 +13,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * 	Description: Main class to start the Spring Boot application. 		
  */
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "gov.fdic.tip")
 public class TipApplication {
 
 	public static void main(String[] args) {

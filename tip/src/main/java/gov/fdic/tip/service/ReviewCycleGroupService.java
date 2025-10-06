@@ -101,8 +101,7 @@ public class ReviewCycleGroupService {
         
         reviewCycleGroupMapper.updateEntityFromDto(reviewCycleGroupDTO, existingReviewCycleGroup);
         existingReviewCycleGroup.setUpdatedBy(updatedBy);
-        existingReviewCycleGroup.setUpdatedDttm(LocalDateTime.now());
-        
+         
         ReviewCycleGroup updatedReviewCycleGroup = reviewCycleGroupRepository.save(existingReviewCycleGroup);
         
         logger.info("Updated ReviewCycleGroup with ID: {}", id);

@@ -1,12 +1,12 @@
 package gov.fdic.tip.integration.service;
 
-import gov.fdic.tip.dto.ReviewCycleGroupDTO;
-import gov.fdic.tip.entity.ReviewCycleGroup;
-import gov.fdic.tip.exception.BusinessException;
-import gov.fdic.tip.exception.ResourceNotFoundException;
-import gov.fdic.tip.repository.ReviewCycleGroupRepository;
-import gov.fdic.tip.service.ReviewCycleGroupService;
-import gov.fdic.tip.util.ReviewCycleGroupTestDataBuilder;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,12 +18,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import gov.fdic.tip.dto.ReviewCycleGroupDTO;
+import gov.fdic.tip.entity.ReviewCycleGroup;
+import gov.fdic.tip.exception.BusinessException;
+import gov.fdic.tip.exception.ResourceNotFoundException;
+import gov.fdic.tip.repository.ReviewCycleGroupRepository;
+import gov.fdic.tip.service.ReviewCycleGroupService;
+import gov.fdic.tip.util.ReviewCycleGroupTestDataBuilder;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -45,6 +46,11 @@ class ReviewCycleGroupServiceIntegrationTest {
         reviewCycleGroupRepository.deleteAll();
         
         testReviewCycleGroupDTO = ReviewCycleGroupTestDataBuilder.createReviewCycleGroupDTOWithoutId();
+        // Ensure the DTO has all required fields set
+        testReviewCycleGroupDTO.setReviewGroupName("Test Review Group");
+        testReviewCycleGroupDTO.setReviewCycleId(1L);
+        testReviewCycleGroupDTO.setReviewTypeId(1L);
+        testReviewCycleGroupDTO.setListOfIdis(Arrays.asList("IDI001", "IDI002", "IDI003"));
     }
 
     @Test
@@ -61,7 +67,7 @@ class ReviewCycleGroupServiceIntegrationTest {
         // Read
         ReviewCycleGroupDTO foundDTO = reviewCycleGroupService.findById(createdDTO.getReviewCycleGroupId());
         assertThat(foundDTO).isNotNull();
-        assertThat(foundDTO.getReviewGroupName()).isEqualTo("Test Review Group null");
+        assertThat(foundDTO.getReviewGroupName()).isEqualTo("Test Review Group");
         assertThat(foundDTO.getListOfIdis()).containsExactly("IDI001", "IDI002", "IDI003");
 
         // Update with new IDIs
@@ -93,9 +99,13 @@ class ReviewCycleGroupServiceIntegrationTest {
         // Given
         ReviewCycleGroupDTO firstDTO = ReviewCycleGroupTestDataBuilder.createReviewCycleGroupDTOWithoutId();
         firstDTO.setReviewGroupName("Duplicate Name");
+        firstDTO.setReviewCycleId(1L);
+        firstDTO.setReviewTypeId(1L);
 
         ReviewCycleGroupDTO secondDTO = ReviewCycleGroupTestDataBuilder.createReviewCycleGroupDTOWithoutId();
         secondDTO.setReviewGroupName("Duplicate Name");
+        secondDTO.setReviewCycleId(1L);
+        secondDTO.setReviewTypeId(1L);
 
         // When
         reviewCycleGroupService.create(firstDTO, CREATED_BY);
@@ -110,7 +120,10 @@ class ReviewCycleGroupServiceIntegrationTest {
     @DisplayName("Should throw ResourceNotFoundException when updating non-existent ReviewCycleGroup")
     void shouldThrowExceptionWhenUpdatingNonExistentReviewCycleGroup() {
         // Given
-        ReviewCycleGroupDTO updateDTO = ReviewCycleGroupTestDataBuilder.createReviewCycleGroupDTO(999L);
+        ReviewCycleGroupDTO updateDTO = ReviewCycleGroupTestDataBuilder.createReviewCycleGroupDTOWithoutId();
+        updateDTO.setReviewGroupName("Non-existent Group");
+        updateDTO.setReviewCycleId(1L);
+        updateDTO.setReviewTypeId(1L);
 
         // When & Then
         assertThatThrownBy(() -> reviewCycleGroupService.update(999L, updateDTO, CREATED_BY))
@@ -124,10 +137,18 @@ class ReviewCycleGroupServiceIntegrationTest {
         // Given
         ReviewCycleGroupDTO dto1 = ReviewCycleGroupTestDataBuilder.createReviewCycleGroupDTOWithoutId();
         dto1.setReviewGroupName("Group 1");
+        dto1.setReviewCycleId(1L);
+        dto1.setReviewTypeId(1L);
+
         ReviewCycleGroupDTO dto2 = ReviewCycleGroupTestDataBuilder.createReviewCycleGroupDTOWithoutId();
         dto2.setReviewGroupName("Group 2");
+        dto2.setReviewCycleId(1L);
+        dto2.setReviewTypeId(1L);
+
         ReviewCycleGroupDTO dto3 = ReviewCycleGroupTestDataBuilder.createReviewCycleGroupDTOWithoutId();
         dto3.setReviewGroupName("Group 3");
+        dto3.setReviewCycleId(1L);
+        dto3.setReviewTypeId(1L);
 
         reviewCycleGroupService.create(dto1, CREATED_BY);
         reviewCycleGroupService.create(dto2, CREATED_BY);
@@ -149,10 +170,18 @@ class ReviewCycleGroupServiceIntegrationTest {
         // Given
         ReviewCycleGroupDTO dto1 = ReviewCycleGroupTestDataBuilder.createReviewCycleGroupDTOWithoutId();
         dto1.setReviewGroupName("Financial Review Group");
+        dto1.setReviewCycleId(1L);
+        dto1.setReviewTypeId(1L);
+
         ReviewCycleGroupDTO dto2 = ReviewCycleGroupTestDataBuilder.createReviewCycleGroupDTOWithoutId();
         dto2.setReviewGroupName("Technical Review Group");
+        dto2.setReviewCycleId(1L);
+        dto2.setReviewTypeId(1L);
+
         ReviewCycleGroupDTO dto3 = ReviewCycleGroupTestDataBuilder.createReviewCycleGroupDTOWithoutId();
         dto3.setReviewGroupName("Security Review Group");
+        dto3.setReviewCycleId(1L);
+        dto3.setReviewTypeId(1L);
 
         reviewCycleGroupService.create(dto1, CREATED_BY);
         reviewCycleGroupService.create(dto2, CREATED_BY);
@@ -173,10 +202,18 @@ class ReviewCycleGroupServiceIntegrationTest {
         // Given
         ReviewCycleGroupDTO dto1 = ReviewCycleGroupTestDataBuilder.createReviewCycleGroupDTOWithoutId();
         dto1.setReviewCycleId(1L);
+        dto1.setReviewGroupName("Group 1");
+        dto1.setReviewTypeId(1L);
+
         ReviewCycleGroupDTO dto2 = ReviewCycleGroupTestDataBuilder.createReviewCycleGroupDTOWithoutId();
         dto2.setReviewCycleId(2L);
+        dto2.setReviewGroupName("Group 2");
+        dto2.setReviewTypeId(1L);
+
         ReviewCycleGroupDTO dto3 = ReviewCycleGroupTestDataBuilder.createReviewCycleGroupDTOWithoutId();
         dto3.setReviewCycleId(1L);
+        dto3.setReviewGroupName("Group 3");
+        dto3.setReviewTypeId(1L);
 
         reviewCycleGroupService.create(dto1, CREATED_BY);
         reviewCycleGroupService.create(dto2, CREATED_BY);
@@ -196,10 +233,21 @@ class ReviewCycleGroupServiceIntegrationTest {
         // Given
         ReviewCycleGroupDTO dto1 = ReviewCycleGroupTestDataBuilder.createReviewCycleGroupDTOWithoutId();
         dto1.setBooleanState(true);
+        dto1.setReviewGroupName("Group 1");
+        dto1.setReviewCycleId(1L);
+        dto1.setReviewTypeId(1L);
+
         ReviewCycleGroupDTO dto2 = ReviewCycleGroupTestDataBuilder.createReviewCycleGroupDTOWithoutId();
         dto2.setBooleanState(false);
+        dto2.setReviewGroupName("Group 2");
+        dto2.setReviewCycleId(1L);
+        dto2.setReviewTypeId(1L);
+
         ReviewCycleGroupDTO dto3 = ReviewCycleGroupTestDataBuilder.createReviewCycleGroupDTOWithoutId();
         dto3.setBooleanState(true);
+        dto3.setReviewGroupName("Group 3");
+        dto3.setReviewCycleId(1L);
+        dto3.setReviewTypeId(1L);
 
         reviewCycleGroupService.create(dto1, CREATED_BY);
         reviewCycleGroupService.create(dto2, CREATED_BY);
@@ -219,6 +267,9 @@ class ReviewCycleGroupServiceIntegrationTest {
         // Given
         ReviewCycleGroupDTO createDTO = ReviewCycleGroupTestDataBuilder.createReviewCycleGroupDTOWithoutId();
         createDTO.setListOfIdis(Arrays.asList());
+        createDTO.setReviewGroupName("Empty IDIs Group");
+        createDTO.setReviewCycleId(1L);
+        createDTO.setReviewTypeId(1L);
 
         // When
         ReviewCycleGroupDTO result = reviewCycleGroupService.create(createDTO, CREATED_BY);
@@ -237,10 +288,18 @@ class ReviewCycleGroupServiceIntegrationTest {
         // Given
         ReviewCycleGroupDTO dto1 = ReviewCycleGroupTestDataBuilder.createReviewCycleGroupDTOWithoutId();
         dto1.setReviewCycleId(1L);
+        dto1.setReviewGroupName("Group 1");
+        dto1.setReviewTypeId(1L);
+
         ReviewCycleGroupDTO dto2 = ReviewCycleGroupTestDataBuilder.createReviewCycleGroupDTOWithoutId();
         dto2.setReviewCycleId(2L);
+        dto2.setReviewGroupName("Group 2");
+        dto2.setReviewTypeId(1L);
+
         ReviewCycleGroupDTO dto3 = ReviewCycleGroupTestDataBuilder.createReviewCycleGroupDTOWithoutId();
         dto3.setReviewCycleId(1L);
+        dto3.setReviewGroupName("Group 3");
+        dto3.setReviewTypeId(1L);
 
         reviewCycleGroupService.create(dto1, CREATED_BY);
         reviewCycleGroupService.create(dto2, CREATED_BY);

@@ -2,12 +2,18 @@
 spring:
   application:
     name: tip-cycle-group-service
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.hazelcast.HazelcastAutoConfiguration
+      - org.springframework.boot.autoconfigure.hazelcast.HazelcastJpaDependencyAutoConfiguration
+  security:
+    enabled: false
   
   # Database Configuration (PostgreSQL)
   datasource:
-    url: jdbc:postgresql://localhost:5432/tip_cycle_group_db
-    username: tip_dev_user
-    password: dev_password_123
+    url: jdbc:postgresql://fdic-prototype-db.postgres.database.azure.com:5432/postgres?currentSchema=fdic_schema
+    username: admin_postgresql
+    password: Welcome2fdictip
     driver-class-name: org.postgresql.Driver
     hikari:
       connection-timeout: 30000
@@ -21,11 +27,11 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      ddl-auto: validate  # Use 'validate' in dev, never 'create-drop' in enterprise
+      ddl-auto: none  # Use 'validate' in dev, never 'create-drop' in enterprise
     properties:
       hibernate:
         format_sql: true
-        show_sql: true
+        show_sql: false
         jdbc:
           batch_size: 20
         order_inserts: true

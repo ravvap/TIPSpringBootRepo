@@ -9,14 +9,13 @@ import java.util.List;
 
 public class ReviewCycleGroupTestDataBuilder {
 
-    public static ReviewCycleGroup createReviewCycleGroup() {
-        return createReviewCycleGroup(1L);
-    }
+    
 
-    public static ReviewCycleGroup createReviewCycleGroup(Long id) {
+    // For new entities (no ID)
+    public static ReviewCycleGroup createReviewCycleGroup() {
         ReviewCycleGroup entity = new ReviewCycleGroup();
-        entity.setReviewCycleGroupId(id);
-        entity.setReviewGroupName("Test Review Group " + id);
+        // DON'T set ID
+        entity.setReviewGroupName("Test Review Group");
         entity.setReviewCycleId(1L);
         entity.setReviewTypeId(2L);
         entity.setReviewConditionId(3L);
@@ -28,19 +27,22 @@ public class ReviewCycleGroupTestDataBuilder {
         entity.setReviewsPerYear(4);
         entity.setCreatedBy("test-user");
         entity.setUpdatedBy("test-user");
-        entity.setCreatedDttm(LocalDateTime.now());
-        entity.setUpdatedDttm(LocalDateTime.now());
+         return entity;
+    }
+
+ // For existing entities (with ID)
+    public static ReviewCycleGroup createReviewCycleGroupWithId(Long id) {
+        ReviewCycleGroup entity = createReviewCycleGroup();
+        entity.setReviewCycleGroupId(id);
+        entity.setReviewGroupName("Test Review Group " + id);
         return entity;
     }
 
-    public static ReviewCycleGroupDTO createReviewCycleGroupDTO() {
-        return createReviewCycleGroupDTO(1L);
-    }
-
-    public static ReviewCycleGroupDTO createReviewCycleGroupDTO(Long id) {
+    // For DTOs without ID (create operations)
+    public static ReviewCycleGroupDTO createReviewCycleGroupDTOWithoutId() {
         ReviewCycleGroupDTO dto = new ReviewCycleGroupDTO();
-        dto.setReviewCycleGroupId(id);
-        dto.setReviewGroupName("Test Review Group " + id);
+        // DON'T set ID
+        dto.setReviewGroupName("Test Review Group");
         dto.setReviewCycleId(1L);
         dto.setReviewTypeId(2L);
         dto.setReviewConditionId(3L);
@@ -50,56 +52,52 @@ public class ReviewCycleGroupTestDataBuilder {
         dto.setListOfIdis(Arrays.asList("IDI001", "IDI002", "IDI003"));
         dto.setReviewFrequency("QUARTERLY");
         dto.setReviewsPerYear(4);
-        dto.setCreatedBy("test-user");
-        dto.setUpdatedBy("test-user");
-        dto.setCreatedDttm(LocalDateTime.now());
-        dto.setUpdatedDttm(LocalDateTime.now());
         return dto;
     }
 
-    public static ReviewCycleGroupDTO createReviewCycleGroupDTOWithoutId() {
-        ReviewCycleGroupDTO dto = createReviewCycleGroupDTO(null);
-        dto.setReviewCycleGroupId(null);
+    // Similar fix for DTO methods
+    public static ReviewCycleGroupDTO createReviewCycleGroupDTO() {
+        return createReviewCycleGroupDTO(null);
+    }
+ // For DTOs with ID (response/update operations)
+    public static ReviewCycleGroupDTO createReviewCycleGroupDTO(Long id) {
+        ReviewCycleGroupDTO dto = createReviewCycleGroupDTOWithoutId();
+        dto.setReviewCycleGroupId(id);
+        dto.setReviewGroupName("Test Review Group " + id);
         return dto;
     }
-
-    public static List<String> createSampleIdis() {
-        return Arrays.asList("IDI001", "IDI002", "IDI003", "IDI004", "IDI005");
-    }
-
-    public static List<String> createEmptyIdis() {
-        return Arrays.asList();
-    }
-
-    public static List<String> createSingleIdi() {
-        return Arrays.asList("IDI001");
-    }
-
-    // Method to create entity with custom IDIs
-    public static ReviewCycleGroup createReviewCycleGroupWithIdis(List<String> idis) {
-        ReviewCycleGroup entity = createReviewCycleGroup();
-        entity.setListOfIdis(idis);
-        return entity;
-    }
-
-    // Method to create DTO with custom IDIs
-    public static ReviewCycleGroupDTO createReviewCycleGroupDTOWithIdis(List<String> idis) {
-        ReviewCycleGroupDTO dto = createReviewCycleGroupDTO();
-        dto.setListOfIdis(idis);
-        return dto;
-    }
-
-    // Method to create entity with custom name
+    // Helper method for creating entities with specific names
     public static ReviewCycleGroup createReviewCycleGroupWithName(String name) {
         ReviewCycleGroup entity = createReviewCycleGroup();
         entity.setReviewGroupName(name);
         return entity;
     }
 
-    // Method to create DTO with custom name
-    public static ReviewCycleGroupDTO createReviewCycleGroupDTOWithName(String name) {
-        ReviewCycleGroupDTO dto = createReviewCycleGroupDTO();
-        dto.setReviewGroupName(name);
-        return dto;
+    // Helper method for creating entities with specific IDIs
+    public static ReviewCycleGroup createReviewCycleGroupWithIdis(List<String> idis) {
+        ReviewCycleGroup entity = createReviewCycleGroup();
+        entity.setListOfIdis(idis);
+        return entity;
     }
+
+    // Helper method for creating entities with specific review cycle ID
+    public static ReviewCycleGroup createReviewCycleGroupWithReviewCycleId(Long reviewCycleId) {
+        ReviewCycleGroup entity = createReviewCycleGroup();
+        entity.setReviewCycleId(reviewCycleId);
+        return entity;
+    }
+
+    // Helper method for creating entities with specific boolean state
+    public static ReviewCycleGroup createReviewCycleGroupWithBooleanState(Boolean booleanState) {
+        ReviewCycleGroup entity = createReviewCycleGroup();
+        entity.setBooleanState(booleanState);
+        return entity;
+    }
+    
+    public static List<String> createSampleIdis() {
+        return Arrays.asList("IDI001", "IDI002", "IDI003", "IDI004", "IDI005");
+    }
+
+
+    // ... other existing methods
 }

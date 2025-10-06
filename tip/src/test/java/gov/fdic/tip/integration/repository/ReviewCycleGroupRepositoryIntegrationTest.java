@@ -33,21 +33,24 @@ class ReviewCycleGroupRepositoryIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        reviewCycleGroup = ReviewCycleGroupTestDataBuilder.createReviewCycleGroup(1L);
+        // Create entity without ID for persistence
+        reviewCycleGroup = ReviewCycleGroupTestDataBuilder.createReviewCycleGroup();
     }
 
     @Test
     @DisplayName("Should save and find ReviewCycleGroup")
     void shouldSaveAndFindReviewCycleGroup() {
         // Given
-        ReviewCycleGroup savedEntity = entityManager.persistAndFlush(reviewCycleGroup);
+        ReviewCycleGroup entity = ReviewCycleGroupTestDataBuilder.createReviewCycleGroup();
 
         // When
+        ReviewCycleGroup savedEntity = reviewCycleGroupRepository.save(entity);
         Optional<ReviewCycleGroup> found = reviewCycleGroupRepository.findById(savedEntity.getReviewCycleGroupId());
 
         // Then
         assertThat(found).isPresent();
-        assertThat(found.get().getReviewGroupName()).isEqualTo("Test Review Group 1");
+        // The name should be "Test Review Group" without "New" for new entities
+        assertThat(found.get().getReviewGroupName()).isEqualTo("Test Review Group");
         assertThat(found.get().getListOfIdis()).containsExactly("IDI001", "IDI002", "IDI003");
     }
 
@@ -62,9 +65,9 @@ class ReviewCycleGroupRepositoryIntegrationTest {
         ReviewCycleGroup entity3 = ReviewCycleGroupTestDataBuilder.createReviewCycleGroupWithIdis(
                 Arrays.asList("IDI001", "IDI006"));
 
-        entityManager.persistAndFlush(entity1);
-        entityManager.persistAndFlush(entity2);
-        entityManager.persistAndFlush(entity3);
+        ReviewCycleGroup saved1 = entityManager.persistAndFlush(entity1);
+        ReviewCycleGroup saved2 = entityManager.persistAndFlush(entity2);
+        ReviewCycleGroup saved3 = entityManager.persistAndFlush(entity3);
 
         // When
         List<ReviewCycleGroup> result = reviewCycleGroupRepository.findByListOfIdisContaining("IDI001");
@@ -72,19 +75,16 @@ class ReviewCycleGroupRepositoryIntegrationTest {
         // Then
         assertThat(result).hasSize(2);
         assertThat(result).extracting(ReviewCycleGroup::getReviewCycleGroupId)
-                .contains(entity1.getReviewCycleGroupId(), entity3.getReviewCycleGroupId());
+                .contains(saved1.getReviewCycleGroupId(), saved3.getReviewCycleGroupId());
     }
 
     @Test
     @DisplayName("Should find ReviewCycleGroups by review cycle ID")
     void shouldFindByReviewCycleId() {
         // Given
-        ReviewCycleGroup entity1 = ReviewCycleGroupTestDataBuilder.createReviewCycleGroup(1L);
-        entity1.setReviewCycleId(100L);
-        ReviewCycleGroup entity2 = ReviewCycleGroupTestDataBuilder.createReviewCycleGroup(2L);
-        entity2.setReviewCycleId(200L);
-        ReviewCycleGroup entity3 = ReviewCycleGroupTestDataBuilder.createReviewCycleGroup(3L);
-        entity3.setReviewCycleId(100L);
+        ReviewCycleGroup entity1 = ReviewCycleGroupTestDataBuilder.createReviewCycleGroupWithReviewCycleId(100L);
+        ReviewCycleGroup entity2 = ReviewCycleGroupTestDataBuilder.createReviewCycleGroupWithReviewCycleId(200L);
+        ReviewCycleGroup entity3 = ReviewCycleGroupTestDataBuilder.createReviewCycleGroupWithReviewCycleId(100L);
 
         entityManager.persistAndFlush(entity1);
         entityManager.persistAndFlush(entity2);
@@ -141,12 +141,9 @@ class ReviewCycleGroupRepositoryIntegrationTest {
     @DisplayName("Should count ReviewCycleGroups by review cycle ID")
     void shouldCountByReviewCycleId() {
         // Given
-        ReviewCycleGroup entity1 = ReviewCycleGroupTestDataBuilder.createReviewCycleGroup(1L);
-        entity1.setReviewCycleId(100L);
-        ReviewCycleGroup entity2 = ReviewCycleGroupTestDataBuilder.createReviewCycleGroup(2L);
-        entity2.setReviewCycleId(200L);
-        ReviewCycleGroup entity3 = ReviewCycleGroupTestDataBuilder.createReviewCycleGroup(3L);
-        entity3.setReviewCycleId(100L);
+        ReviewCycleGroup entity1 = ReviewCycleGroupTestDataBuilder.createReviewCycleGroupWithReviewCycleId(100L);
+        ReviewCycleGroup entity2 = ReviewCycleGroupTestDataBuilder.createReviewCycleGroupWithReviewCycleId(200L);
+        ReviewCycleGroup entity3 = ReviewCycleGroupTestDataBuilder.createReviewCycleGroupWithReviewCycleId(100L);
 
         entityManager.persistAndFlush(entity1);
         entityManager.persistAndFlush(entity2);
@@ -163,12 +160,9 @@ class ReviewCycleGroupRepositoryIntegrationTest {
     @DisplayName("Should find ReviewCycleGroups by boolean state")
     void shouldFindByBooleanState() {
         // Given
-        ReviewCycleGroup entity1 = ReviewCycleGroupTestDataBuilder.createReviewCycleGroup(1L);
-        entity1.setBooleanState(true);
-        ReviewCycleGroup entity2 = ReviewCycleGroupTestDataBuilder.createReviewCycleGroup(2L);
-        entity2.setBooleanState(false);
-        ReviewCycleGroup entity3 = ReviewCycleGroupTestDataBuilder.createReviewCycleGroup(3L);
-        entity3.setBooleanState(true);
+        ReviewCycleGroup entity1 = ReviewCycleGroupTestDataBuilder.createReviewCycleGroupWithBooleanState(true);
+        ReviewCycleGroup entity2 = ReviewCycleGroupTestDataBuilder.createReviewCycleGroupWithBooleanState(false);
+        ReviewCycleGroup entity3 = ReviewCycleGroupTestDataBuilder.createReviewCycleGroupWithBooleanState(true);
 
         entityManager.persistAndFlush(entity1);
         entityManager.persistAndFlush(entity2);
