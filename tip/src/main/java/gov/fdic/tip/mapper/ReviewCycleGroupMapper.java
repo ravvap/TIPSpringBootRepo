@@ -24,6 +24,11 @@ import java.util.List;
 public interface ReviewCycleGroupMapper {
 
     @Mapping(target = "reviewCycleGroupId", ignore = true)
+<<<<<<< HEAD
+=======
+    @Mapping(target = "createdDttm", ignore = true)
+    @Mapping(target = "updatedDttm", ignore = true)
+>>>>>>> ca99b032b7275102ef2f56e461047c742bbe0ade
     ReviewCycleGroup toEntity(ReviewCycleGroupDTO dto);
 
     ReviewCycleGroupDTO toDto(ReviewCycleGroup entity);
