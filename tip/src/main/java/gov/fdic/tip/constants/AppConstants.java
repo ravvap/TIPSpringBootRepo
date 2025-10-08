@@ -1,6 +1,12 @@
 package gov.fdic.tip.constants;
 
-
+/**
+ * @author Prasad Ravva
+ * @Project TIP
+ * @Module Review Cycle Group
+ * @Date 9/28/2025
+ * Application-wide constants. 
+ */
 public class AppConstants {
     
     private AppConstants() {

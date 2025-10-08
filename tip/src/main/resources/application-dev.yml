@@ -1,0 +1,205 @@
+# Development Profile Configuration
+spring:
+  application:
+    name: tip-cycle-group-service
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.hazelcast.HazelcastAutoConfiguration
+      - org.springframework.boot.autoconfigure.hazelcast.HazelcastJpaDependencyAutoConfiguration
+  security:
+    enabled: false
+  
+  # Database Configuration (PostgreSQL)
+  datasource:
+    url: jdbc:postgresql://fdic-prototype-db.postgres.database.azure.com:5432/postgres?currentSchema=fdic_schema
+    username: admin_postgresql
+    password: Welcome2fdictip
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      connection-timeout: 30000
+      maximum-pool-size: 10
+      minimum-idle: 2
+      idle-timeout: 300000
+      max-lifetime: 1200000
+      connection-test-query: SELECT 1
+  
+  # JPA Configuration
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: none  # Use 'validate' in dev, never 'create-drop' in enterprise
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: false
+        jdbc:
+          batch_size: 20
+        order_inserts: true
+        order_updates: true
+    open-in-view: false
+  
+  # Jackson JSON Configuration
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: America/New_York
+    serialization:
+      write-dates-as-timestamps: false
+      indent-output: true
+    deserialization:
+      fail-on-unknown-properties: false
+  
+  # MVC Configuration
+  mvc:
+    throw-exception-if-no-handler-found: true
+  web:
+    resources:
+      add-mappings: false
+  
+  # Actuator Configuration
+  management:
+    endpoints:
+      web:
+        exposure:
+          include: health,info,metrics,env,beans
+        base-path: /management
+    endpoint:
+      health:
+        show-details: always
+        show-components: always
+      metrics:
+        enabled: true
+    info:
+      env:
+        enabled: true
+  
+# Security (Basic setup for dev)
+security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/auth/realms/tip-dev
+
+# Logging Configuration
+logging:
+  level:
+      root: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: logs/tip-service-dev.log
+  logback:
+    rollingpolicy:
+      max-file-size: 10MB
+      max-history: 30
+
+# Server Configuration
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+  compression:
+    enabled: true
+    mime-types: text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,application/json
+    min-response-size: 1024
+  tomcat:
+    max-connections: 10000
+    max-threads: 200
+    min-spare-threads: 10
+    connection-timeout: 5000
+    accesslog:
+      enabled: true
+      pattern: '%h %l %u %t "%r" %s %b %D'
+      directory: logs
+      prefix: access_log
+      suffix: .log
+
+# Application Specific Configuration
+app:
+  config:
+    # API Configuration
+    api:
+      version: v1
+      max-page-size: 100
+      default-page-size: 20
+    
+    # Security Configuration (Disable for dev)	
+    security:
+     enabled: false
+    
+# Cache Configuration
+cache:
+  ttl-minutes: 30
+  max-entries: 1000
+
+# Rate Limiting
+rate-limit:
+  requests-per-minute: 100
+  enabled: true
+
+# Audit Configuration
+audit:
+  enabled: true
+  retention-days: 90
+
+# Email Configuration (for notifications)
+email:
+  enabled: false
+  from-address: dev-noreply@fdic.gov
+  host: localhost
+  port: 1025
+
+# File Upload Configuration
+file:
+  max-size: 10MB
+  allowed-extensions: .pdf,.doc,.docx,.xls,.xlsx
+
+# Async Configuration
+async:
+  core-pool-size: 5
+  max-pool-size: 20
+  queue-capacity: 100
+
+# Swagger/OpenAPI Configuration
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+    tags-sorter: alpha
+    display-request-duration: true
+  packages-to-scan: gov.fdic.tip.controller
+  default-produces-media-type: application/json
+
+# Feature Toggles (Feature Flags)
+feature:
+  flags:
+    enable-experimental-endpoints: true
+    enable-batch-operations: true
+    enable-export-functionality: true
+    enable-notifications: false
+
+# Integration Configurations
+integration:
+  # External Service Endpoints
+  services:
+    identity-service:
+      url: http://localhost:8081/auth
+      timeout: 5000
+      retry-attempts: 3
+    notification-service:
+      url: http://localhost:8082/notifications
+      timeout: 3000
+    audit-service:
+      url: http://localhost:8083/audit
+      timeout: 2000
+  
+# Monitoring and Metrics
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+
